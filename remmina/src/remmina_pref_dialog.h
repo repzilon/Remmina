@@ -39,8 +39,6 @@
  * Remmina Perference Dialog
  */
 
-G_BEGIN_DECLS
-
 #define REMMINA_TYPE_PREF_DIALOG               (remmina_pref_dialog_get_type ())
 #define REMMINA_PREF_DIALOG(obj)               (G_TYPE_CHECK_INSTANCE_CAST ((obj), REMMINA_TYPE_PREF_DIALOG, RemminaPrefDialog))
 #define REMMINA_PREF_DIALOG_CLASS(klass)       (G_TYPE_CHECK_CLASS_CAST ((klass), REMMINA_TYPE_PREF_DIALOG, RemminaPrefDialogClass))

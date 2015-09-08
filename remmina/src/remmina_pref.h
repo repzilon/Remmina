@@ -81,6 +81,7 @@ typedef struct _RemminaPref
 	gint default_action;
 	gint scale_quality;
 	gchar *resolutions;
+	gint ssh_loglevel;
 	gint sshtunnel_port;
 	gint recent_maximum;
 	gint default_mode;
@@ -135,6 +136,7 @@ typedef struct _RemminaPref
 
 #define DEFAULT_SSHTUNNEL_PORT 4732
 #define DEFAULT_SSH_PORT 22
+#define DEFAULT_SSH_LOGLEVEL 1
 
 extern const gchar *default_resolutions;
 extern gchar *remmina_pref_file;
@@ -151,6 +153,7 @@ guint remmina_pref_keymap_get_keyval(const gchar *keymap, guint keyval);
 gchar** remmina_pref_keymap_groups(void);
 
 gint remmina_pref_get_scale_quality(void);
+gint remmina_pref_get_ssh_loglevel(void);
 gint remmina_pref_get_sshtunnel_port(void);
 
 void remmina_pref_set_value(const gchar *key, const gchar *value);

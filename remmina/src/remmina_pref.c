@@ -270,6 +270,11 @@ void remmina_pref_init(void)
 	else
 		remmina_pref.toolbar_pin_down = FALSE;
 
+	if (g_key_file_has_key(gkeyfile, "remmina_pref", "ssh_loglevel", NULL))
+		remmina_pref.ssh_loglevel = g_key_file_get_integer(gkeyfile, "remmina_pref", "ssh_loglevel", NULL);
+	else
+		remmina_pref.ssh_loglevel = DEFAULT_SSH_LOGLEVEL;
+
 	if (g_key_file_has_key(gkeyfile, "remmina_pref", "sshtunnel_port", NULL))
 		remmina_pref.sshtunnel_port = g_key_file_get_integer(gkeyfile, "remmina_pref", "sshtunnel_port", NULL);
 	else
@@ -438,6 +443,7 @@ void remmina_pref_save(void)
 	g_key_file_set_boolean(gkeyfile, "remmina_pref", "hide_connection_toolbar", remmina_pref.hide_connection_toolbar);
 	g_key_file_set_integer(gkeyfile, "remmina_pref", "default_action", remmina_pref.default_action);
 	g_key_file_set_integer(gkeyfile, "remmina_pref", "scale_quality", remmina_pref.scale_quality);
+	g_key_file_set_integer(gkeyfile, "remmina_pref", "ssh_loglevel", remmina_pref.ssh_loglevel);
 	g_key_file_set_boolean(gkeyfile, "remmina_pref", "hide_toolbar", remmina_pref.hide_toolbar);
 	g_key_file_set_boolean(gkeyfile, "remmina_pref", "hide_statusbar", remmina_pref.hide_statusbar);
 	g_key_file_set_boolean(gkeyfile, "remmina_pref", "show_quick_search", remmina_pref.show_quick_search);
@@ -622,6 +628,11 @@ remmina_pref_keymap_groups(void)
 gint remmina_pref_get_scale_quality(void)
 {
 	return remmina_pref.scale_quality;
+}
+
+gint remmina_pref_get_ssh_loglevel(void)
+{
+	return remmina_pref.ssh_loglevel;
 }
 
 gint remmina_pref_get_sshtunnel_port(void)

@@ -59,6 +59,9 @@ static const gpointer default_mode_list[] =
 static const gpointer tab_mode_list[] =
 { "0", N_("Tab by groups"), "1", N_("Tab by protocols"), "8", N_("Tab all connections"), "9", N_("Do not use tabs"), NULL };
 
+static const gpointer ssh_loglevel_list[] =
+{ "0", N_("None"), "1", N_("Rare"), "2", N_("Entry"), "3", N_("Packet"), "4", N_("Function"), NULL };
+
 struct _RemminaPrefDialogPriv
 {
 	GtkWidget *notebook;
@@ -72,6 +75,7 @@ struct _RemminaPrefDialogPriv
 	GtkWidget *tab_mode_combo;
 	GtkWidget *scale_quality_combo;
 	GtkWidget *sshtunnel_port_entry;
+	GtkWidget *ssh_loglevel_combo;
 	GtkWidget *auto_scroll_step_entry;
 	GtkWidget *recent_maximum_entry;
 	GtkWidget *resolutions_list;
@@ -194,6 +198,10 @@ static void remmina_pref_dialog_destroy(GtkWidget *widget, gpointer data)
 	remmina_pref.sshtunnel_port = atoi(gtk_entry_get_text(GTK_ENTRY(priv->sshtunnel_port_entry)));
 	if (remmina_pref.sshtunnel_port <= 0)
 		remmina_pref.sshtunnel_port = DEFAULT_SSHTUNNEL_PORT;
+
+	s = remmina_public_combo_get_active_text(GTK_COMBO_BOX(priv->ssh_loglevel_combo));
+	remmina_pref.ssh_loglevel = atoi(s);
+	g_free(s);
 
 	remmina_pref.auto_scroll_step = atoi(gtk_entry_get_text(GTK_ENTRY(priv->auto_scroll_step_entry)));
 	if (remmina_pref.auto_scroll_step < 10)
@@ -475,15 +483,25 @@ static void remmina_pref_dialog_init(RemminaPrefDialog *dialog)
 	g_snprintf(buf, sizeof(buf), "%i", remmina_pref.sshtunnel_port);
 	gtk_entry_set_text(GTK_ENTRY(widget), buf);
 	priv->sshtunnel_port_entry = widget;
+	
+	widget = gtk_label_new(_("SSH log level"));
+	gtk_widget_show(widget);
+	gtk_misc_set_alignment(GTK_MISC(widget), 0.0, 0.5);
+	remmina_pref_dialog_attach(table, widget, 0, 10, 1, 1);
+	
+	widget = remmina_public_create_combo_mapint(ssh_loglevel_list, remmina_pref.ssh_loglevel, FALSE, NULL);
+	gtk_widget_show(widget);
+	remmina_pref_dialog_attach(table, widget, 1, 10, 2, 1);
+	priv->ssh_loglevel_combo = widget;
 
 	widget = gtk_label_new(_("Auto scroll step size"));
 	gtk_widget_show(widget);
 	gtk_misc_set_alignment(GTK_MISC(widget), 0.0, 0.5);
-	remmina_pref_dialog_attach(table, widget, 0, 10, 1, 1);
+	remmina_pref_dialog_attach(table, widget, 0, 11, 1, 1);
 
 	widget = gtk_entry_new();
 	gtk_widget_show(widget);
-	remmina_pref_dialog_attach(table, widget, 1, 10, 2, 1);
+	remmina_pref_dialog_attach(table, widget, 1, 11, 2, 1);
 	gtk_entry_set_max_length(GTK_ENTRY(widget), 3);
 	g_snprintf(buf, sizeof(buf), "%i", remmina_pref.auto_scroll_step);
 	gtk_entry_set_text(GTK_ENTRY(widget), buf);
@@ -492,7 +510,7 @@ static void remmina_pref_dialog_init(RemminaPrefDialog *dialog)
 	widget = gtk_label_new(_("Maximum recent items"));
 	gtk_widget_show(widget);
 	gtk_misc_set_alignment(GTK_MISC(widget), 0.0, 0.5);
-	remmina_pref_dialog_attach(table, widget, 0, 11, 1, 1);
+	remmina_pref_dialog_attach(table, widget, 0, 12, 1, 1);
 
 #if GTK_VERSION == 3
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
@@ -500,7 +518,7 @@ static void remmina_pref_dialog_init(RemminaPrefDialog *dialog)
 	hbox = gtk_hbox_new(FALSE, 2);
 #endif
 	gtk_widget_show(hbox);
-	remmina_pref_dialog_attach(table, hbox, 1, 11, 2, 1);
+	remmina_pref_dialog_attach(table, hbox, 1, 12, 2, 1);
 
 	widget = gtk_entry_new();
 	gtk_widget_show(widget);
