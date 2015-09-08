@@ -71,6 +71,8 @@
 #include "remmina_public.h"
 #include "remmina_log.h"
 #include "remmina_ssh.h"
+#include "remmina_pref.h"
+#include "remmina/remmina_trace_calls.h"
 
 /*************************** SSH Base *********************************/
 
@@ -366,7 +368,9 @@ remmina_ssh_log_callback(ssh_session session, int priority, const char *message,
 gboolean
 remmina_ssh_init_session (RemminaSSH *ssh)
 {
+	TRACE_CALL("remmina_ssh_init_session");
 	gint verbosity;
+	//gchar* verbosity;
 
 	ssh->callback = g_new0 (struct ssh_callbacks_struct, 1);
 	ssh->callback->userdata = ssh;
@@ -378,7 +382,7 @@ remmina_ssh_init_session (RemminaSSH *ssh)
 	ssh_options_set (ssh->session, SSH_OPTIONS_USER, ssh->user);
 	if (remmina_log_running ())
 	{
-		verbosity = SSH_LOG_RARE;
+		verbosity = remmina_pref.ssh_loglevel;
 		ssh_options_set (ssh->session, SSH_OPTIONS_LOG_VERBOSITY, &verbosity);
 		ssh->callback->log_function = remmina_ssh_log_callback;
 	}
@@ -406,6 +410,7 @@ remmina_ssh_init_from_file (RemminaSSH *ssh, RemminaFile *remminafile)
 	const gchar *ssh_username;
 	const gchar *ssh_privatekey;
 	const gchar *server;
+	gint verbosity;
 	gchar *s;
 
 	ssh->session = NULL;
